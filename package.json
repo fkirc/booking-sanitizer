@@ -1,0 +1,19 @@
+{
+  "name": "booking-sanitizer",
+  "private": true,
+  "version": "0.0.0",
+  "devDependencies": {
+    "nx": "^21.6.4",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "next": "^15.5.4",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "@nestjs/core": "^11.1.6",
+    "@nestjs/common": "^11.1.6",
+    "@nestjs/platform-express": "^11.1.6",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  }
+}

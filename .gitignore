@@ -1,0 +1,14 @@
+node_modules
+
+# TypeScript
+*.tsbuildinfo
+
+# Nx
+.nx/cache
+.nx/workspace-data
+
+# Next.js
+.next
+
+# NestJS
+dist
