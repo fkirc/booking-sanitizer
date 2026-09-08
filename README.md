@@ -7,7 +7,7 @@ App to analyze and find anomalies in booking data. Uses AI for analysis, but foc
 - **Booking Insights** — Insights that can be safely derived from the raw data
 - **Duplicate booking detection** — Showing potential duplicates in bookings
 - **Anomalies** — Help to find inconsistencies or errors on the data
-- **Data sources** — An AI-based import for raw booking data
+- **Data sources** — An import for raw booking data
 
 ## Core thesis: relational document ingestor
 
