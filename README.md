@@ -34,5 +34,7 @@ Due to tight time limits, a few shortcuts were taken that I would not take for a
 
 **No authentication** — No user management, no separation between users, only one database for one user. No security checks yet. 
 
-**Focus on the data model, not the code** — Focus was on a clean, persistent data model. Clean code and clean architecture on the TypeScript side were largely not prompted yet.
+**Focus on the data model, not the code** — Focus was on sensible dependencies and on probing the relational data model thesis. Clean code and clean architecture on the TypeScript side were largely not prompted yet.
+
+**Rule suggestions are hardcoded, not AI-generated** — A real MVP might derive the booking manual live, e.g. with an LLM pass over current data. Here it's a fixed set mined once from the sample data, hardcoded into the demo page, due to time limits.
 
