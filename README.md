@@ -11,9 +11,9 @@ App to analyze and find anomalies in booking data. Uses AI for analysis, but foc
 
 ## Core thesis: relational document ingestor
 
-A "relational document ingestor" is an architecture that I came up with in the Prism project at Bitpanda, to ingest large amounts of financial PDFs for portfolio analysis. It works well for financial portfolio analysis — but it's unproven for accounting data.
+A "relational document ingestor" is an architecture that I came up with in the Prism project at Bitpanda, to ingest large amounts of financial PDFs for portfolio analysis. It works well for financial portfolio analysis — but it is yet unproven for accounting data.
 
-Core pillars:
+Core pillars of the architecture:
 
 - **Relational DB** — Unstructured or semi-structured data gets mapped into a predefined PostgreSQL DB schema.
 - **On-the-fly entity generation** — Needed DB entities (accounts, cost centers, vendors, ...) are upserted on the fly from the documents, without a predefined entity list.

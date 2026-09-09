@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// One raw import run of a source file (e.g. sample-source-data/journal-entries.json).
+model Import {
+  id         String            @id @default(cuid())
+  filename   String
+  importedAt DateTime          @default(now()) @map("imported_at")
+  documents  JournalDocument[]
+
+  @@map("import")
+}
+
+// One accounting document (journal entry). Balanced: sum of its lines' debit/credit = 0.
+model JournalDocument {
+  companyCode String        @map("company_code")
+  documentId  String        @map("document_id")
+  postingDate DateTime      @db.Date @map("posting_date")
+  sourceHash  String        @unique @map("source_hash")
+  importId    String        @map("import_id")
+  import      Import        @relation(fields: [importId], references: [id])
+  lines       JournalLine[]
+
+  @@id([companyCode, documentId])
+  @@map("journal_document")
+}
+
+// One line item of a journal document.
+model JournalLine {
+  companyCode String   @map("company_code")
+  documentId  String   @map("document_id")
+  lineId      Int      @map("line_id")
+  glAccount   String   @map("gl_account")
+  costCenter  String?  @map("cost_center")
+  amount      Decimal  @db.Decimal(15, 2)
+  currency    String
+  debitCredit String   @map("debit_credit")
+  bookingText String   @map("booking_text")
+  vendorId    String?  @map("vendor_id")
+  customerId  String?  @map("customer_id")
+  taxCode     String?  @map("tax_code")
+
+  document JournalDocument @relation(fields: [companyCode, documentId], references: [companyCode, documentId])
+
+  @@id([companyCode, documentId, lineId])
+  @@map("journal_line")
+}
+
+// Dimension tables, populated on the fly as unseen codes are encountered during import.
+model GlAccount {
+  code String  @id
+  name String?
+
+  @@map("gl_account")
+}
+
+model CostCenter {
+  code String  @id
+  name String?
+
+  @@map("cost_center")
+}
+
+model Vendor {
+  id   String  @id
+  name String?
+
+  @@map("vendor")
+}
+
+model Customer {
+  id   String  @id
+  name String?
+
+  @@map("customer")
+}
+
+model TaxCode {
+  code String  @id
+  name String?
+
+  @@map("tax_code")
+}
