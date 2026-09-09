@@ -5,8 +5,8 @@
   "scripts": {
     "db:up": "docker compose up -d postgres",
     "db:down": "docker compose down",
-    "prisma:generate": "prisma generate --schema apps/backend/prisma/schema.prisma",
-    "prisma:migrate": "prisma migrate dev --schema apps/backend/prisma/schema.prisma",
+    "prisma:generate": "env $(cat apps/backend/.env | xargs) prisma generate --schema apps/backend/prisma/schema.prisma",
+    "prisma:migrate": "env $(cat apps/backend/.env | xargs) prisma migrate dev --schema apps/backend/prisma/schema.prisma",
     "backend:build": "nx build backend",
     "backend:serve": "nx serve backend",
     "backend:dev": "nx dev backend",

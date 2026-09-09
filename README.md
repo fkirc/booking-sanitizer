@@ -9,6 +9,19 @@ App to analyze and find anomalies in booking data. Uses AI for analysis, but foc
 - **Anomalies** — Help to find inconsistencies or errors on the data
 - **Data sources** — An import for raw booking data
 
+## How to run
+
+```
+cp apps/backend/.env.example apps/backend/.env
+pnpm install
+pnpm db:up          # Postgres via Docker Compose
+pnpm prisma:migrate
+pnpm backend:dev    # http://localhost:3001
+pnpm frontend:dev   # http://localhost:3000
+```
+
+Then open the Data sources page and click "Import sample data".
+
 ## Core thesis: relational document ingestor
 
 A "relational document ingestor" is an architecture that I came up with in the Prism project at Bitpanda, to ingest large amounts of financial PDFs for portfolio analysis. It works well for financial portfolio analysis — but it is yet unproven for accounting data.
