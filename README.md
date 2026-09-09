@@ -39,6 +39,18 @@ Core pillars of the architecture:
 I use a pre-generated deterministic import script for this demo's known input structure (CSV/JSON).
 A real product facing arbitrary customer export formats might need LLM-based imports with structured outputs enforced by the LLM-sequencer, or it might need on-the-fly generated, sandboxed import scripts per format — out of scope for this demo.
 
+## Context Engineering
+
+Within this demo app, I explored the relational document ingestor thesis. While I can confidently say that this architecture works excellent for portfolio analysis of stocks, ETFs, crypto and other financial assets, it is still an unproven architecture for accounting data. So open question for me: Is this architecture flexible enough for the data that might be faced in real world accounting? Difficult to judge based on this generated demo data.
+
+But for the sake of this demo, let's assume the answer is yes, and let us look at possible context fetching strategies for this approach:
+
+**Ad Hoc Exploration of relational database** — The philosophy behind such queries is to gain evidence directly from the underlying database, without using a vector DB as an intermediate representation.
+
+**MCP server on top of the relational data** — Based on the relational data representation, a natural expansion may be to build an MCP server on top of it. Why? Because an MCP (or a CLI tool) can use deterministic aggregations and provide them to an LLM in a condensed way.
+
+**Risk: introduction of errors during import, drift between raw data (CSV, JSON) and relational data** — Given tools like anomaly detection, it should be possible to detect such import errors efficiently. However, the main value of this app should be to detect anomalies in the **user's data**, not anomalies of the import process of the tool itself. So one of the critical points, in my opinion, is to reduce the ratio of import errors to an absolute minimum, such that the main power of the anomaly detection is spent on helping the user with their job instead of debugging this tool.
+
 ## Shortcuts taken
 
 Due to tight time limits, a few shortcuts were taken that I would not take for a real MVP.
