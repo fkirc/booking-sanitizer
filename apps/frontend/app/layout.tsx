@@ -22,6 +22,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Link href="/anomalies" className="text-sm text-gray-600 hover:text-gray-900">
             Anomalies
           </Link>
+          <Link href="/duplicates" className="text-sm text-gray-600 hover:text-gray-900">
+            Duplicates
+          </Link>
         </nav>
         <main className="mx-auto max-w-5xl px-6 py-8">{children}</main>
       </body>
