@@ -76,7 +76,7 @@ export default function InsightsPage() {
         </table>
       </Section>
 
-      <Section title="Activity by cost center" subtitle="Total posted amount per cost center, across all lines.">
+      <Section title="Activity by cost center" subtitle="Total posted amount per cost center.">
         <table className="w-full text-left text-sm">
           <thead className="text-xs text-gray-500">
             <tr>

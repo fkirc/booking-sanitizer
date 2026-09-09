@@ -9,6 +9,7 @@
     "prisma:migrate": "prisma migrate dev --schema apps/backend/prisma/schema.prisma",
     "backend:build": "nx build backend",
     "backend:serve": "nx serve backend",
+    "backend:dev": "nx dev backend",
     "frontend:dev": "nx dev frontend",
     "frontend:build": "nx build frontend"
   },

@@ -14,6 +14,16 @@
       "options": {
         "command": "node --env-file=apps/backend/.env dist/backend/apps/backend/src/main.js"
       }
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "tsc -p apps/backend/tsconfig.json --watch --preserveWatchOutput",
+          "node --watch --env-file=apps/backend/.env dist/backend/apps/backend/src/main.js"
+        ],
+        "parallel": true
+      }
     }
   }
 }

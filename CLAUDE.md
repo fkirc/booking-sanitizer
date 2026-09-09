@@ -12,8 +12,10 @@ Only minimal testing: only generate e2e tests to the extent needed to finish a t
 **Frontend validation:**
 Validate the frontend with Playwright to ensure it's usable and looks reasonable.
 
-**Frontend dev server:**
-Run the frontend via `next dev` (nx run frontend:dev), not `next start` — `next start` serves a production build with no live reload, so edits go unseen until a manual rebuild.
+**Dev servers:**
+Run both apps in watch mode, not their production/one-shot targets — otherwise edits go unseen until a manual rebuild.
+- Frontend: `next dev` (nx run frontend:dev).
+- Backend: `nx run backend:dev` — `tsc --watch` + `node --watch`.
 
 **Fail fast:**
 Do not mock missing infrastructure. Docker needs to be available on the machine to launch a container with Postgres, otherwise immediately fail at startup.

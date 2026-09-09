@@ -1,14 +1,26 @@
 "use client";
 
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import type { ImportDetailDto, ImportSummaryDto, TriggerImportResponseDto } from "@shared/data-sources";
 import { formatEUR } from "../format";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
 export default function DataSourcesPage() {
+  return (
+    <Suspense fallback={<p className="text-sm text-gray-500">Loading…</p>}>
+      <DataSourcesPageContent />
+    </Suspense>
+  );
+}
+
+function DataSourcesPageContent() {
+  const targetDocumentId = useSearchParams().get("document");
+
   const [imports, setImports] = useState<ImportSummaryDto[]>([]);
   const [details, setDetails] = useState<Record<string, ImportDetailDto>>({});
+  const [openImportIds, setOpenImportIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [importing, setImporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,6 +48,15 @@ export default function DataSourcesPage() {
     setDetails((prev) => ({ ...prev, [id]: detail }));
   }
 
+  function toggleImport(id: string, open: boolean) {
+    setOpenImportIds((prev) => {
+      const next = new Set(prev);
+      open ? next.add(id) : next.delete(id);
+      return next;
+    });
+    if (open) loadDetail(id);
+  }
+
   async function triggerImport() {
     setImporting(true);
     setError(null);
@@ -56,6 +77,19 @@ export default function DataSourcesPage() {
   useEffect(() => {
     loadImports();
   }, []);
+
+  // Deep link from Anomalies (?document=...): load every import's detail so we can
+  // find which one contains the target document, then auto-expand it.
+  useEffect(() => {
+    if (!targetDocumentId) return;
+    imports.forEach((imp) => loadDetail(imp.id));
+  }, [targetDocumentId, imports]);
+
+  useEffect(() => {
+    if (!targetDocumentId) return;
+    const owner = imports.find((imp) => details[imp.id]?.documents.some((d) => d.documentId === targetDocumentId));
+    if (owner) toggleImport(owner.id, true);
+  }, [targetDocumentId, imports, details]);
 
   return (
     <div>
@@ -91,8 +125,9 @@ export default function DataSourcesPage() {
           {imports.map((imp) => (
             <details
               key={imp.id}
+              open={openImportIds.has(imp.id)}
+              onToggle={(e) => toggleImport(imp.id, e.currentTarget.open)}
               className="rounded border border-gray-200 bg-white"
-              onToggle={(e) => e.currentTarget.open && loadDetail(imp.id)}
             >
               <summary className="cursor-pointer px-4 py-3 text-sm">
                 <span className="font-medium">{imp.filename}</span>{" "}
@@ -102,11 +137,12 @@ export default function DataSourcesPage() {
                 </span>
               </summary>
               <div className="border-t border-gray-100 px-4 py-3">
-                {details[imp.id] ? (
-                  <DocumentTable importDetail={details[imp.id]} />
-                ) : (
-                  <p className="text-sm text-gray-500">Loading documents…</p>
-                )}
+                {openImportIds.has(imp.id) &&
+                  (details[imp.id] ? (
+                    <DocumentTable importDetail={details[imp.id]} highlightDocumentId={targetDocumentId} />
+                  ) : (
+                    <p className="text-sm text-gray-500">Loading documents…</p>
+                  ))}
               </div>
             </details>
           ))}
@@ -116,8 +152,20 @@ export default function DataSourcesPage() {
   );
 }
 
-function DocumentTable({ importDetail }: { importDetail: ImportDetailDto }) {
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+function DocumentTable({
+  importDetail,
+  highlightDocumentId,
+}: {
+  importDetail: ImportDetailDto;
+  highlightDocumentId: string | null;
+}) {
+  const [expandedId, setExpandedId] = useState<string | null>(highlightDocumentId);
+
+  useEffect(() => {
+    if (!highlightDocumentId) return;
+    setExpandedId(highlightDocumentId);
+    document.getElementById(`doc-${highlightDocumentId}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [highlightDocumentId]);
 
   return (
     <table className="w-full text-left text-sm">
@@ -131,11 +179,13 @@ function DocumentTable({ importDetail }: { importDetail: ImportDetailDto }) {
       <tbody>
         {importDetail.documents.map((doc) => {
           const isExpanded = expandedId === doc.documentId;
+          const isTarget = highlightDocumentId === doc.documentId;
           return (
             <Fragment key={doc.documentId}>
               <tr
+                id={`doc-${doc.documentId}`}
                 onClick={() => setExpandedId(isExpanded ? null : doc.documentId)}
-                className="cursor-pointer border-t border-gray-100 hover:bg-gray-50"
+                className={`cursor-pointer border-t border-gray-100 hover:bg-gray-50 ${isTarget ? "bg-yellow-50" : ""}`}
               >
                 <td className="px-2 py-1 font-mono">
                   {isExpanded ? "▾" : "▸"} {doc.documentId}
